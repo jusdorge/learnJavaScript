@@ -1,6 +1,6 @@
-var myGamePiece, myObstacle;
+var myGamePiece;
+var myObstacles = [];
 function startGame() {
-  myObstacle = new component(10, 200, "green", 300, 120);
   myGamePiece = new component(30, 30, "red", 10, 120);
   myGameArea.start();
 }
@@ -41,21 +41,32 @@ function component(width, height, color, x, y) {
   }
 }
 function updateGameArea() {
-  if (myGamePiece.crashWith(myObstacle)) {
-    myGameArea.stop();
-  } else {
-      myGameArea.clear();
-      myObstacle.x += -1;
-      myObstacle.update();
       this.speedX=0;
       this.speedY=0;
       if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
       if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
       if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1; }
       if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1; }
-      myGamePiece.newPos();
-      myGamePiece.update();
-  }
+      var x, y;
+      for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+          myGameArea.stop();
+          return;
+        }
+      }
+      myGameArea.clear();
+      myGameArea.frameNo += 1;
+      if (myGameArea.frameNo == 1 || everyinterval(150)) {
+        x = myGameArea.canvas.width;
+        y = myGameArea.canvas.height - 200
+        myObstacles.push(new component(10, 200, "green", x, y));
+      }
+      for (i = 0; i < myObstacles.length; i += 1) {
+        myObstacles[i].x += -1;
+        myObstacles[i].update();
+      }
+    myGamePiece.newPos();  
+    myGamePiece.update();
 }
 
 var myGameArea = {
@@ -66,6 +77,7 @@ var myGameArea = {
     this.context = this.canvas.getContext("2d");
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateGameArea, 20);
+    this.frameNo = 0;
     window.addEventListener('keydown', function (e) {
       myGameArea.keys = (myGameArea.keys || []);
       myGameArea.keys[e.keyCode] = true;
@@ -81,6 +93,12 @@ var myGameArea = {
     clearInterval(this.interval);
   }
 }
+
+function everyinterval(n) {
+  if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+  return false;
+}
+
 function onDocumentLoad() {
     startGame();
 }
