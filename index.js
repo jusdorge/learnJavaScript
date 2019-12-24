@@ -1,7 +1,7 @@
+var myGamePiece, myObstacle;
 function startGame() {
+  myObstacle = new component(10, 200, "green", 300, 120);
   myGamePiece = new component(30, 30, "red", 10, 120);
-  myGamePiece.gravity = 0.05;
-  myScore = new component("30px", "Consolas", "black", 280, 40, "text");
   myGameArea.start();
 }
 
@@ -24,6 +24,7 @@ function component(width, height, color, x, y) {
 }
 function updateGameArea() {
   myGameArea.clear();
+  myObstacle.update();
   this.speedX=0;
   this.speedY=0;
   if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
