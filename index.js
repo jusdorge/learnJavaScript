@@ -21,18 +21,40 @@ function component(width, height, color, x, y) {
       this.x += this.speedX;
       this.y += this.speedY;
     }
+    this.crashWith = function(otherobj) {
+    var myleft = this.x;
+    var myright = this.x + (this.width);
+    var mytop = this.y;
+    var mybottom = this.y + (this.height);
+    var otherleft = otherobj.x;
+    var otherright = otherobj.x + (otherobj.width);
+    var othertop = otherobj.y;
+    var otherbottom = otherobj.y + (otherobj.height);
+    var crash = true;
+    if ((mybottom < othertop) ||
+        (mytop > otherbottom) ||
+        (myright < otherleft) ||
+        (myleft > otherright)) {
+      crash = false;
+    }
+    return crash;
+  }
 }
 function updateGameArea() {
-  myGameArea.clear();
-  myObstacle.update();
-  this.speedX=0;
-  this.speedY=0;
-  if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
-  if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
-  if (myGameArea.key && myGameArea.keys[38]) {myGamePiece.speedY = -1; }
-  if (myGameArea.key && myGameArea.key[40]) {myGamePiece.speedY = 1; }
-  myGamePiece.newPos();
-  myGamePiece.update();
+  if (myGamePiece.crashWith(myObstacle)) {
+    myGameArea.stop();
+  } else {
+      myGameArea.clear();
+      myObstacle.update();
+      this.speedX=0;
+      this.speedY=0;
+      if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+      if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+      if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1; }
+      if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1; }
+      myGamePiece.newPos();
+      myGamePiece.update();
+  }
 }
 
 var myGameArea = {
@@ -53,6 +75,9 @@ var myGameArea = {
   },
   clear : function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  },
+  stop : function() {
+    clearInterval(this.interval);
   }
 }
 function onDocumentLoad() {
