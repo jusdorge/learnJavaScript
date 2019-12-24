@@ -47,7 +47,7 @@ function updateGameArea() {
       if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
       if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1; }
       if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1; }
-      var x, y;
+      var x, y, height, gap, minHeight, maxHeight, minGap, maxGap;
       for (i = 0; i < myObstacles.length; i += 1) {
         if (myGamePiece.crashWith(myObstacles[i])) {
           myGameArea.stop();
@@ -67,11 +67,7 @@ function updateGameArea() {
         myObstacles.push(new component(10, height, "green", x, 0));
         myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
       }
-      if (myGameArea.frameNo == 1 || everyinterval(150)) {
-        x = myGameArea.canvas.width;
-        y = myGameArea.canvas.height - 200
-        myObstacles.push(new component(10, 200, "green", x, y));
-      }
+
       for (i = 0; i < myObstacles.length; i += 1) {
         myObstacles[i].x += -1;
         myObstacles[i].update();
