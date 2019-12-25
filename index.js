@@ -2,13 +2,17 @@ var myGamePiece;
 var myObstacles = [];
 var myScore;
 function startGame() {
-  myGamePiece = new component(30, 30, "red", 10, 120);
+  myGamePiece = new component(30, 30, "smiley.gif", 10, 120,"image");
   myScore = new component("30px", "Consolas", "black", 280, 40, "text");
   myGameArea.start();
 }
 
 function component(width, height, color, x, y, type) {
     this.type = type;
+    if (type == "image"){
+        this.image = new Image();
+        this.image.src = color;
+    }
     this.width = width;
     this.height = height;
     this.speedX = 0;
@@ -21,7 +25,12 @@ function component(width, height, color, x, y, type) {
           ctx.font = this.width + " " + this.height;
           ctx.fillStyle = color;
           ctx.fillText(this.text, this.x, this.y);
-        } else {
+        } else if (this.type == "image"){
+            ctx.drawImage(this.image,
+            this.x,
+            this.y,
+            this.width, this.height);
+        }else{    
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
@@ -50,12 +59,14 @@ function component(width, height, color, x, y, type) {
     }
 }
 function updateGameArea() {
+      myGamePiece.image.src = "smiley.gif";
       this.speedX=0;
       this.speedY=0;
-      if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
-      if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
-      if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1; }
-      if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1; }
+      if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1;}
+      if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1;}
+      if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+      if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+      myGamePiece.image.src = "angry.gif";
       var x, y, height, gap, minHeight, maxHeight, minGap, maxGap;
       for (i = 0; i < myObstacles.length; i += 1) {
         if (myGamePiece.crashWith(myObstacles[i])) {
