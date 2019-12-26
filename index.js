@@ -59,14 +59,12 @@ function component(width, height, color, x, y, type) {
     }
 }
 function updateGameArea() {
-      myGamePiece.image.src = "smiley.gif";
       this.speedX=0;
       this.speedY=0;
       if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1;}
       if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1;}
       if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
       if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
-      myGamePiece.image.src = "angry.gif";
       var x, y, height, gap, minHeight, maxHeight, minGap, maxGap;
       for (i = 0; i < myObstacles.length; i += 1) {
         if (myGamePiece.crashWith(myObstacles[i])) {
@@ -84,8 +82,11 @@ function updateGameArea() {
         minGap = 50;
         maxGap = 200;
         gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
-        myObstacles.push(new component(10, height, "green", x, 0));
-        myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+        minWidth = 10;
+        maxWidth = 50;
+        width = Math.floor(Math.random()*(maxWidth-minWidth+1) + minWidth)
+        myObstacles.push(new component(width, height, "green", x, 0));
+        myObstacles.push(new component(width, x - height - gap, "green", x, height + gap));
       }
 
       for (i = 0; i < myObstacles.length; i += 1) {
@@ -110,9 +111,13 @@ var myGameArea = {
     window.addEventListener('keydown', function (e) {
       myGameArea.keys = (myGameArea.keys || []);
       myGameArea.keys[e.keyCode] = true;
+      myGamePiece.image.src="angry.gif";
+      myGamePiece.update();
     })
     window.addEventListener('keyup', function (e) {
-      myGameArea.keys[e.keyCode] = false;
+        myGameArea.keys[e.keyCode] = false;
+        myGamePiece.image.src="smiley.gif";
+        myGamePiece.update();
     })    
   },
   clear : function() {
@@ -121,6 +126,15 @@ var myGameArea = {
   stop : function() {
     clearInterval(this.interval);
   }
+}
+
+function restart(){
+    //myGameArea = null;
+    //myGamePiece = null;
+    //myStatusBar = null;
+    //myScroe =null;
+    myObstacles = [];
+    startGame();
 }
 
 function everyinterval(n) {
